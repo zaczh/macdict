@@ -32,7 +32,7 @@ Usage
 e.g.
 
 ```
-$ macdict apple
+$ macdict Mac OS X
 Definitions of <Mac OS X>
 mac os
 Mac OS
