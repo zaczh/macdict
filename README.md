@@ -11,7 +11,7 @@ for C executable file:
 
 > `make c`
 
-for Object-C executable file:
+for Objective-C executable file:
 
 > `make m`
 
