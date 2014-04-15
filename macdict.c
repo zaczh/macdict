@@ -12,22 +12,15 @@ char *join(const char *s1, const char *s2)
     return s;
 }
 
-char * getCStringFromCFString(CFStringRef s) {
+char *getCStringFromCFString(CFStringRef s) {
     if (s == NULL) {
         return NULL;
     }
     CFStringEncoding encoding = kCFStringEncodingUTF8;
-    /*
-     *CFIndex length = CFStringGetLength(s);
-     *CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, encoding);
-     *char *buffer = (char *)malloc(maxSize);
-     *if (CFStringGetCString(s, buffer, maxSize, encoding)) {
-     *    return buffer;
-     *}
-     */
-    CFIndex maxSize = CFStringGetMaximumSizeOfFileSystemRepresentation(s);
+    CFIndex length = CFStringGetLength(s);
+    CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, encoding);
     char *buffer = (char *)malloc(maxSize);
-    if (CFStringGetFileSystemRepresentation(s, buffer, maxSize)) {
+    if (CFStringGetCString(s, buffer, maxSize, encoding)) {
         return buffer;
     }
     return NULL;
