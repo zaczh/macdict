@@ -8,7 +8,7 @@ Installation
 
 for Objective-C executable file:
 
-> `make m`
+> `make -f Makefile2 m`
 
 Usage
 -----
