@@ -77,9 +77,6 @@ int setupSystemInformation()
 void showDictionaryList()
 {
     @autoreleasepool {
-        for (NSString *name in availableDictionariesKeyedByName) {
-            NSPrint(@"%@", name);
-        }
         //for (NSString *name in availableDictionariesKeyedByName) {
         //    NSPrint(@"%@", name);
         //}
@@ -247,7 +244,11 @@ int searchDictionary(const NSString *phrase, const NSMutableSet *dicts)
                  */
             }
             if (totalDefinitions < 1) {
-                NSPrint(@"Definitions of <%@>\n%@", phrase, @"(none)");
+		    if(!gToSearchInAllDictionaries){
+			    NSPrint(@"Definitions of <%@> in {%@}\n%@", phrase, [[dicts allObjects] componentsJoinedByString:@""], @"(none)");
+		    }else{
+                	NSPrint(@"Definitions of <%@> in {all}\n%@", phrase, @"(none)");
+		    }
             }
         }
     }
@@ -264,11 +265,9 @@ int main(int argc, char *argv[])
     NSMutableArray *words = [NSMutableArray array];
     NSMutableSet *dicts = [NSMutableSet set];
     int exitCode = 0;
-    if ((exitCode = setupParameters(argc, (void *)argv, words, dicts))) {
     if ((exitCode = setupSystemInformation())) {
       exit(exitCode);
     }
-    if ((exitCode = setupSystemInformation())) {
     if ((exitCode = setupParameters_mod(argc, (void *)argv, words, dicts))) {
       exit(exitCode);
     }
