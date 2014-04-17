@@ -51,6 +51,7 @@ void showHelpInformation()
     NSPrint(@"        Use 'all' to select all available dictionaries.");
     NSPrint(@"        If no dictionary is specified, it will look up the word or phrase in all available dictionaries and only return the first definition found.");
     NSPrint(@"  -i    Specify dictionary indexes to search in, using ',' as delimiters.");
+    NSPrint(@"        If indexes contain 0 then all available dictionaries are selected.");
 }
 
 NSMapTable *gAvailableDictionariesKeyedByName = NULL;
