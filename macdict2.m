@@ -79,6 +79,56 @@ void showDictionaryList()
 bool gToSearchInAllDictionaries = false;
 bool gToShowDictionaryList = false;
 bool gToShowHelpInformation = false;
+
+int ch;
+char *acceptedArgs = "d:lh";
+int setupParameters_mod(const int argc, char *const argv[], const NSMutableArray *words, const NSMutableSet *dicts)
+{
+    while((ch = getopt(argc, argv, acceptedArgs)) != -1){
+        switch(ch){
+            case 'h':
+                gToShowHelpInformation = true;
+                return 0;
+            case 'd':
+                    if(strcmp(optarg, "all") != 0){
+                        NSString *dictName = nil;
+			const int len = strlen(optarg);
+			char buffer[len+1];
+		       	strcpy(buffer, optarg);
+			char *p = strtok(buffer, ",");
+			while(p != NULL){
+			    int index;
+			    sscanf(p,"%d",&index);
+			    dictName = (NSString *)DCSDictionaryGetName((DCSDictionaryRef)availableDictionariesArray[index-1]);
+			    if(dictName){
+			        [dicts addObject:dictName];
+			    }
+			    p = strtok(NULL, ",");
+			}
+                    }else{
+                        gToSearchInAllDictionaries = true;
+                    }
+                break;
+            case 'l':
+                gToShowDictionaryList = true;
+                return 0;
+            case '?':
+            default:
+                exit(-1);
+        }
+    }
+    
+    //the last parameter is the searching word
+    if(argv[optind] != NULL){
+        NSString *param = [NSString stringWithCString:argv[optind] encoding:NSUTF8StringEncoding];
+        [words addObject:param];
+    }else{
+        printf("Please provide a word for searching.\n");
+        exit(-1);
+    }
+    return 0;
+}
+
 int setupParameters(const int argc, const char *argv[], const NSMutableArray *words, const NSMutableSet *dicts)
 {
     @autoreleasepool {
