@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- * from:
+ * References:
  * http://nshipster.com/dictionary-services/
  * https://github.com/mattt/DictionaryKit
  */
@@ -138,7 +138,7 @@ int setupParameters(const int argc, char *const argv[], const NSMutableArray *wo
         }
     }
     
-    //the rest parameter is the searching words
+    //the rest parameters are the searching words
     if (argv[optind] != NULL) {
         for (i = optind; argv[i] != NULL; i++) {
             [words addObject: [NSString stringWithCString: argv[i] encoding: NSUTF8StringEncoding]];
