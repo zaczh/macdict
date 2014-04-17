@@ -44,15 +44,16 @@ void NSPrintErr(NSString *format, ...)
 NSString *gProgramName;
 void showHelpInformation()
 {
-    NSPrint(@"Usage: %@ [-h] [-l] [[-d <dictionary>], ...] <words>", gProgramName);
+    NSPrint(@"Usage: %@ [-h] [-l] [-d <dictionary> <words>", gProgramName);
     NSPrint(@"  -h    Display this help message.");
-    NSPrint(@"  -l    Show the list of names of all available dictionaries.");
-    NSPrint(@"  -d    Specify a dictionary to search in.");
+    NSPrint(@"  -l    Show indexed list of names of all available dictionaries.");
+    NSPrint(@"  -d    Specify dictionary indexes to search in, using ',' to separate them");
     NSPrint(@"        Use 'all' to select all available dictionaries.");
     NSPrint(@"        If no dictionary is specified, it will look up the word or phrase in all available and only return the first definition found.");
 }
 
 NSMapTable *availableDictionariesKeyedByName = nil;
+NSArray *availableDictionariesArray;
 int setupSystemInformation()
 {
     availableDictionariesKeyedByName = [NSMapTable
@@ -63,7 +64,13 @@ int setupSystemInformation()
     for (id dictionary in availableDictionaries) {
         NSString *name = (NSString *)DCSDictionaryGetName((DCSDictionaryRef)dictionary);
         [availableDictionariesKeyedByName setObject: dictionary forKey: name];
+	[arrM addObject:dictionary];
     }
+    availableDictionariesArray = [arrM sortedArrayUsingComparator:^(id obj1, id obj2){
+	NSString *str1 = (NSString *)DCSDictionaryGetName((DCSDictionaryRef)obj1);
+	NSString *str2 = (NSString *)DCSDictionaryGetName((DCSDictionaryRef)obj2);
+	return [str1 compare:str2];	   
+    }];
     return 0;
 }
 
@@ -73,6 +80,13 @@ void showDictionaryList()
         for (NSString *name in availableDictionariesKeyedByName) {
             NSPrint(@"%@", name);
         }
+        //for (NSString *name in availableDictionariesKeyedByName) {
+        //    NSPrint(@"%@", name);
+        //}
+
+	for(int i=0; i<availableDictionariesArray.count; i++){
+	    NSPrint(@"%d) %@", i+1, (NSString *)DCSDictionaryGetName((DCSDictionaryRef)(availableDictionariesArray[i])));
+	}
     }
 }
 
@@ -251,9 +265,11 @@ int main(int argc, char *argv[])
     NSMutableSet *dicts = [NSMutableSet set];
     int exitCode = 0;
     if ((exitCode = setupParameters(argc, (void *)argv, words, dicts))) {
+    if ((exitCode = setupSystemInformation())) {
       exit(exitCode);
     }
     if ((exitCode = setupSystemInformation())) {
+    if ((exitCode = setupParameters_mod(argc, (void *)argv, words, dicts))) {
       exit(exitCode);
     }
     if (gToShowHelpInformation) {
