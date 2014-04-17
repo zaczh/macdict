@@ -58,7 +58,9 @@ int setupSystemInformation()
     availableDictionariesKeyedByName = [NSMapTable
         mapTableWithKeyOptions: NSPointerFunctionsCopyIn
         valueOptions: NSPointerFunctionsObjectPointerPersonality];
-    for (id dictionary in (NSArray *)DCSCopyAvailableDictionaries()) {
+    NSSet *availableDictionaries = [(NSSet *)DCSCopyAvailableDictionaries() autorelease];
+    NSMutableArray *arrM = [NSMutableArray array];
+    for (id dictionary in availableDictionaries) {
         NSString *name = (NSString *)DCSDictionaryGetName((DCSDictionaryRef)dictionary);
         [availableDictionariesKeyedByName setObject: dictionary forKey: name];
     }
@@ -136,6 +138,7 @@ int searchDictionary(const NSString *phrase, const NSMutableSet *dicts)
             CFStringRef definition = DCSCopyTextDefinition(dictionary, (CFStringRef)phrase, range);
             if (definition) {
                 NSPrint(@"Definitions of <%@>\n%@", phrase, (NSString *)definition);
+	    	CFRelease(definition);
             } else {
                 NSPrint(@"Definitions of <%@>\n%@", phrase, @"(none)");
             }
@@ -156,6 +159,7 @@ int searchDictionary(const NSString *phrase, const NSMutableSet *dicts)
                     }
                     NSPrint(@"Definitions of <%@> in {%@}\n%@", (NSString *)term, dictionaryName, (NSString *)definition);
                     totalDefinitions++;
+		    CFRelease(definition);
                 }
 
                 /*// alternate mode?
